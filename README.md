@@ -1,0 +1,343 @@
+# ComfyUI-Prompt-Translator
+
+把中文描述转成 Stable Diffusion 能用的英文标签。**模型负责理解中文，词库负责给出准确的标签。**
+
+> 中文自然语言 → 正向/负向英文标签 → 直接接 KSampler
+
+---
+
+## 为什么不用"LLM 直接写标签"
+
+小模型（1.5B～7B）能理解中文，但**写不出规范的 Danbooru 标签**：
+
+```
+输入：少女站在花海，害羞地笑
+模型直出：a girl standing in a sea of flowers, shy smile
+          ↑ 这不是 SDXL 认识的标签写法
+```
+
+本项目的做法：
+
+```
+模型只负责"拆词"         → ["站在花海", "害羞", "微笑"]
+词库负责"中文→标签"      → "standing in flower field, shy, blushing, smile"
+```
+
+**拆词可以模糊，标签必须精确。** 两者分开，各自发挥优势。
+
+---
+
+## 特性
+
+| 特性 | 说明 |
+|---|---|
+| 中文输入 | 不用背英文标签 |
+| 中英混写 | 英文原样透传，中文翻译 |
+| 正负分离 | "不要水印" → 负向 |
+| 三极性词库 | 正面 / 负面 / 语境（由 AI 判断） |
+| LoRA 保护 | 触发词只精确匹配，禁止模糊 |
+| 词库可积累 | SQLite 单文件，越用越准 |
+| 多 AI 后端 | 本地模型 / 任意 OpenAI 兼容接口 |
+| 缓存自适应 | 改了词库自动失效缓存 |
+| 完全离线 | 不联网也能用（本地模型模式） |
+
+---
+
+## 安装
+
+### 1. 放到 custom_nodes
+
+```bash
+cd ComfyUI/custom_nodes
+git clone https://github.com/你的用户名/ComfyUI-Prompt-Translator.git
+```
+
+首次启动会自动从 `data/seed.csv` 建库。
+
+### 2. 选择 AI 后端
+
+**方式 A：本地模型（离线，需显存）**
+
+```bash
+pip install transformers accelerate
+```
+
+下载模型（国内用 hf-mirror 加速，约 90 秒）：
+
+```powershell
+$env:HF_ENDPOINT = "https://hf-mirror.com"
+pip install huggingface_hub
+huggingface-cli download Qwen/Qwen2.5-1.5B-Instruct --local-dir D:\models\Qwen2.5-1.5B
+```
+
+然后指向该目录：
+
+```powershell
+$env:PT_MODEL_DIR = "D:\models\Qwen2.5-1.5B"
+```
+
+可选模型规模（按显存挑）：
+
+| 模型 | 显存 | 速度 |
+|---|---|---|
+| Qwen2.5-1.5B-Instruct | 约 3 GB | 最快，够用 |
+| Qwen2.5-3B-Instruct | 约 6 GB | 更准 |
+| Qwen2.5-7B-Instruct | 约 14 GB | 最准，需大显存 |
+
+> 仓库不包含模型权重（2.89 GB）。没有模型也没关系——把 `use_ai` 关掉即可纯词库运行。
+
+**方式 B：API（零显存，需 key）**
+
+复制 `ai_config.example.json` 为 `ai_config.json`，填入：
+
+```json
+{
+  "backend": "openai",
+  "base_url": "https://api.deepseek.com",
+  "model": "deepseek-chat",
+  "api_key": "sk-xxxx"
+}
+```
+
+**方式 C：纯词库（不装任何模型）**
+
+节点里把 `use_ai` 关掉即可，只走词库匹配，0.1 秒出结果。
+
+---
+
+## 快速开始
+
+最小工作流：
+
+```
+Checkpoint ──CLIP──→ 提示词翻译（直连采样器）.clip
+           ──MODEL─→ LoRA ─→ KSampler.model
+提示词翻译.positive → KSampler.positive
+提示词翻译.negative → KSampler.negative
+```
+
+输入：
+
+```
+莉莉坐在窗边看书，黄昏的光，浅景深，不要水印
+```
+
+输出：
+
+```
+正向：masterpiece, best quality, 1girl, solo, upper body,
+     sitting by window, reading book, golden hour, shallow depth of field
+负向：lowres, bad anatomy, bad hands, extra fingers, watermark, text, worst quality
+```
+
+---
+
+## 节点参数
+
+| 参数 | 默认 | 说明 |
+|---|---|---|
+| `text` | — | 中文描述，逗号分隔多项 |
+| `use_ai` | true | 关掉只走词库（快 4 倍） |
+| `unload_after` | true | 翻译后释放模型显存 |
+| `mixed_language` | true | 三个字段里允许中文 |
+| `ai_backend` | local | `local` 或 `openai` |
+| `prefix` | 质量词+构图 | 正向前缀，空则用内置默认 |
+| `suffix` | 空 | 正向后缀，定氛围 |
+| `default_negative` | 基础负面 | 负向前缀，**与内置默认叠加** |
+| `clip` | — | 连 Checkpoint 的 CLIP |
+
+输出：
+
+| 端口 | 类型 | 用途 |
+|---|---|---|
+| `positive` | CONDITIONING | → KSampler.positive |
+| `negative` | CONDITIONING | → KSampler.negative |
+| `info` | STRING | 接 PreviewAny 查看详情 |
+
+---
+
+## 三种极性
+
+| 极性 | 行为 | 例子 |
+|---|---|---|
+| `pos` | 永远进正向 | 樱花 → `cherry blossom` |
+| `neg` | 永远进负向 | 水印 → `watermark`（即使没写"不要"） |
+| `auto` | 标签由词库给，正负由 AI 按语境判断 | 亮 → `bright` 或进负向 |
+
+**判定优先级**：
+
+```
+词库 neg  >  词库 auto（看 AI）  >  词库 pos  >  原文"不要X"提取
+```
+
+---
+
+## 词库管理
+
+数据库是单个 SQLite 文件（默认 `data/prompt_db.db`）。
+
+### 表结构
+
+```sql
+CREATE TABLE prompt_map (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  category TEXT,          -- 分类（场景/动作/表情/...）
+  zh TEXT UNIQUE,         -- 中文短语
+  tags TEXT,              -- 英文标签
+  hits INTEGER DEFAULT 0,
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  polarity TEXT DEFAULT 'pos'   -- pos / neg / auto
+);
+```
+
+### 加词（三种方式）
+
+**① 命令行（最简单）**
+
+```bash
+python tools/add_word.py 花海 "flower field, flower sea" pos
+python tools/add_word.py 水印 watermark neg
+python tools/add_word.py 亮 bright auto
+```
+
+Windows 下双击 `tools/add_word.bat` 进入交互模式（先改里面的 Python 路径）。
+
+**② SQL**
+
+```sql
+INSERT INTO prompt_map (category, zh, tags, polarity)
+VALUES ('场景', '花海', 'flower field, flower sea', 'pos');
+```
+
+**③ 编辑种子表**
+
+改 `data/seed.csv` 后删除 `data/prompt_db.db` 重新启动即可重建。
+
+### 未收录怎么办
+
+节点的 `info` 输出会列出所有没命中的词：
+
+```
+【未收录】云朵, 暖光
+```
+
+把它们加进词库即可。**词库覆盖度决定了上限，模型不决定。**
+
+---
+
+## LoRA 触发词
+
+触发词必须**一字不差**，所以单独保护：
+
+```
+① 存在 category='LoRA' 分区
+② 只做精确匹配，禁止模糊
+③ 模型丢弃时自动补回
+④ 拼错不会"纠正"，而是原样保留 + 提示
+```
+
+加触发词：
+
+```
+中文名 → 触发词
+莉莉   → lilyww
+```
+
+然后写进 `prefix`：`masterpiece, best quality, lilyww, 1girl, solo,`
+
+---
+
+## 配置文件
+
+`ai_config.json`（与节点同目录）：
+
+```json
+{
+  "backend": "local",
+  "base_url": "https://api.deepseek.com",
+  "model": "deepseek-chat",
+  "api_key_env": "PT_API_KEY",
+  "api_key": ""
+}
+```
+
+API key 读取顺序：`api_key` 字段 → 环境变量 → `~/.pt_api_key` 文件。
+
+---
+
+## 环境变量
+
+| 变量 | 作用 |
+|---|---|
+| `PT_DB_PATH` | 词库路径 |
+| `PT_MODEL_DIR` | 本地模型目录 |
+| `PT_AI_CONFIG` | 配置文件路径 |
+| `PT_BACKEND` | 后端类型 |
+| `PT_API_KEY` | API key |
+
+---
+
+## 缓存
+
+ComfyUI 默认对相同输入跳过执行。本节点提供了 `fingerprint_inputs`：
+
+```
+输入变化        → 重跑
+词库文件变化    → 重跑
+模型目录变化    → 重跑
+什么都没变      → 走缓存（快）
+```
+
+**改了词库不用重启，直接点 Queue 就生效。**
+
+---
+
+## 已知限制
+
+| 限制 | 说明 |
+|---|---|
+| 词库决定上限 | 没收录的词翻不出来（会显示在"未收录"） |
+| 否定要逐项写 | `不要A，B` 只有 A 进负向，建议 `不要A，不要B` |
+| 抽象描述 | "要高级感"这类没有对应标签，翻不出来 |
+| 显存峰值 | 本地 1.5B 模型加载峰值约 7.5 GB |
+| 只支持 SDXL 系 | CLIP 编码依赖传入的 clip，理论上通用 |
+
+---
+
+## 目录结构
+
+```
+ComfyUI-Prompt-Translator/
+├── __init__.py              节点定义 + 核心逻辑
+├── ai_backends.py           AI 后端（local / openai）
+├── data/
+│   ├── seed.csv             种子词表（349 条）
+│   └── prompt_db.db         首次启动自动生成
+├── examples/
+│   └── workflow.json        示例工作流
+├── ai_config.example.json   配置模板
+├── requirements.txt
+├── LICENSE
+└── README.md
+```
+
+---
+
+## License
+
+MIT
+
+---
+
+## English (short)
+
+A ComfyUI custom node that turns Chinese descriptions into SDXL tags.
+
+**Two-layer design**: an LLM only *segments* Chinese into phrases; a SQLite vocabulary maps phrases to canonical English tags. This avoids the common failure of small LLMs inventing non-standard tags.
+
+- Chinese / mixed / English input
+- Positive & negative separation
+- Three polarities: pos / neg / auto (context-aware)
+- LoRA trigger protection (exact match only)
+- Pluggable AI backends: local transformers or any OpenAI-compatible API
+- Cache invalidation on vocabulary change
