@@ -1,0 +1,7 @@
+{
+  "backend": "local",
+  "base_url": "https://api.deepseek.com",
+  "model": "deepseek-chat",
+  "api_key_env": "PT_API_KEY",
+  "api_key": ""
+}
