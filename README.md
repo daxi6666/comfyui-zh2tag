@@ -213,6 +213,17 @@ VALUES ('场景', '花海', 'flower field, flower sea', 'pos');
 
 改 `data/seed.csv` 后删除 `data/prompt_db.db` 重新启动即可重建。
 
+### 我的词库会丢吗
+
+不会。`data/prompt_db.db` 已加入 `.gitignore`：
+
+```
+git pull 更新插件     → 不动你的词库
+节点只在库不存在时建库 → 已有数据不会被覆盖
+```
+
+只有手动删除该文件才会重置。想备份就复制一份 `.db`。
+
 ### 未收录怎么办
 
 节点的 `info` 输出会列出所有没命中的词：
