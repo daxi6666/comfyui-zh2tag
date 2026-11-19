@@ -1,0 +1,350 @@
+﻿category,zh,tags,polarity
+光影,逆光,"backlight, rim light",pos
+光影,边缘光,rim light,pos
+光影,柔光,soft diffused light,pos
+光影,侧光,side lighting,pos
+光影,顶光,top lighting,pos
+光影,光斑,bokeh,pos
+光影,镜头光晕,lens flare,pos
+光影,体积光,volumetric light,pos
+光影,黄昏,golden hour,pos
+光影,夜晚,"night, city lights",pos
+光影,雨天,rain,pos
+光影,底光,bottom lighting,pos
+光影,硬光,hard light,pos
+光影,自然光,natural lighting,pos
+光影,丁达尔效应,god rays,pos
+光影,高光,specular highlights,pos
+光影,发丝高光,hair highlights,pos
+光影,发光,glowing,pos
+光影,投影,cast shadow,pos
+光影,环境光遮蔽,ambient occlusion,pos
+光影,电影感光照,cinematic lighting,pos
+光影,曝光充足,high key,pos
+光影,暗调,low key,pos
+光影,粉色调,pastel tone,pos
+动作,站立,standing,pos
+动作,坐着,sitting,pos
+动作,躺下,lying down,pos
+动作,回头,looking back,pos
+动作,挥手,waving hand,pos
+动作,双手合十,hands clasped together,pos
+动作,手放胸前,hands on chest,pos
+动作,托腮,hand on cheek,pos
+动作,捧花,holding bouquet,pos
+动作,撑伞,holding umbrella,pos
+动作,伸手,reaching out,pos
+动作,跪坐,kneeling,pos
+动作,蹲着,squatting,pos
+动作,回头四分之三,three-quarter view,pos
+动作,抱膝,hugging own legs,pos
+动作,撩头发,hand in hair,pos
+动作,扶帽,hand on hat,pos
+动作,举手,raising hand,pos
+动作,张开双臂,outstretched arms,pos
+动作,交叉双腿,crossed legs,pos
+动作,侧身,side view,pos
+动作,回头看镜头,looking back at viewer,pos
+动作,低头看书,reading book,pos
+动作,走路,walking,pos
+动作,奔跑,running,pos
+动作,跳舞,dancing,pos
+动作,漂浮,floating,pos
+动作,站在,standing,pos
+动作,坐在,sitting,pos
+动作,躺在,lying down,pos
+动作,趴在,lying on stomach,pos
+动作,靠在,leaning,pos
+动作,走在,walking on,pos
+动作,站在花海,standing in flower field,pos
+动作,看书,reading book,pos
+动作,读书,reading book,pos
+动作,别过头,looking away,pos
+动作,转过头,turning head,pos
+动作,回过头,looking back,pos
+动作,看向镜头,looking at viewer,pos
+动作,看向远方,looking away,pos
+动作,坐在窗边,sitting by window,pos
+地形,缓坡,gentle slope,pos
+地形,台地,terrace,pos
+地形,下沉广场,sunken plaza,pos
+地形,微地形,undulating terrain,pos
+地形,挡土墙,retaining wall,pos
+场景,花海,flower field,pos
+场景,森林,forest,pos
+场景,城市街道,city street,pos
+场景,窗边,by window,pos
+场景,废墟,ruins,pos
+场景,校园,school,pos
+场景,图书馆,library,pos
+场景,公园,park,pos
+场景,水边,waterside,pos
+场景,百合花丛,lily field,pos
+场景,竹林,bamboo forest,pos
+场景,草地,grass field,pos
+场景,山坡,hillside,pos
+场景,山顶,mountain top,pos
+场景,沙滩,sandy beach,pos
+场景,湖面,lake,pos
+场景,河边,riverside,pos
+场景,瀑布,waterfall,pos
+场景,溪流,stream,pos
+场景,雪地,snow field,pos
+场景,沙漠,desert,pos
+场景,樱花树下,under cherry blossoms,pos
+场景,红叶林,autumn leaves forest,pos
+场景,星空,starry sky,pos
+场景,云海,sea of clouds,pos
+场景,田野,farmland,pos
+场景,霓虹街道,neon street,pos
+场景,小巷,alley,pos
+场景,广场,plaza,pos
+场景,教室,classroom,pos
+场景,咖啡馆,cafe,pos
+场景,楼梯,staircase,pos
+场景,教堂,church,pos
+场景,温室,greenhouse,pos
+场景,庭院,courtyard,pos
+场景,天台,rooftop,pos
+场景,城市灯光,city lights,pos
+场景,灯光,lights,pos
+天气,晴天,clear sky,pos
+天气,多云,cloudy,pos
+天气,阴天,overcast,pos
+天气,下雨,rain,pos
+天气,细雨,drizzle,pos
+天气,下雪,snowing,pos
+天气,薄雾,mist,pos
+天气,大风,strong wind,pos
+头发,长发,long hair,pos
+头发,双麻花辫,braided twin tails,pos
+头发,渐变发色,gradient hair,pos
+头发,发丝细节,detailed hair strands,pos
+头发,短发,short hair,pos
+头发,双马尾,twintails,pos
+头发,单麻花辫,braid,pos
+头发,披肩发,hair down,pos
+头发,盘发,updo,pos
+头发,呆毛,ahoge,pos
+头发,刘海,bangs,pos
+头发,淡紫色头发,lavender hair,pos
+头发,白金色头发,platinum blonde hair,pos
+头发,黑色头发,black hair,pos
+头发,粉色头发,pink hair,pos
+头发,发光发丝,glowing hair,pos
+头发,飘动的头发,floating hair,pos
+季节,春天,spring,pos
+季节,夏天,summer,pos
+季节,秋天,autumn,pos
+季节,冬天,winter,pos
+时间,清晨,early morning,pos
+时间,正午,midday,pos
+时间,日落,sunset,pos
+时间,深夜,midnight,pos
+服装,白色长裙,white dress,pos
+服装,黑纱头纱,black lace veil,pos
+服装,百合花冠,white lily flower crown,pos
+服装,蕾丝,lace,pos
+服装,黑领,black collar,pos
+服装,露肩,off shoulder,pos
+服装,长手套,long gloves,pos
+服装,黑色长裙,black dress,pos
+服装,白裙黑领,white dress with black collar,pos
+服装,吊带,camisole,pos
+服装,长袖,long sleeves,pos
+服装,荷叶边,frills,pos
+服装,蝴蝶结,"ribbon, bow",pos
+服装,发饰,hair ornament,pos
+服装,耳环,earrings,pos
+服装,项链,necklace,pos
+服装,披肩,shawl,pos
+服装,斗篷,cape,pos
+服装,长靴,boots,pos
+服装,高跟鞋,high heels,pos
+服装,校服,school uniform,pos
+服装,水手服,sailor collar,pos
+服装,汉服,hanfu,pos
+服装,和服,kimono,pos
+服装,婚纱,wedding dress,pos
+服装,旗袍,cheongsam,pos
+构图,特写,"close-up, face focus",pos
+构图,半身,upper body,pos
+构图,全身,full body,pos
+构图,背影,from behind,pos
+构图,仰视,from below,pos
+构图,俯视,from above,pos
+构图,留白,negative space,pos
+构图,脸部特写,face focus,pos
+构图,七分身,cowboy shot,pos
+构图,正面,front view,pos
+构图,侧面,side view,pos
+构图,四分之三侧,three-quarter view,pos
+构图,鸟瞰,bird's eye view,pos
+构图,广角,wide angle,pos
+构图,长焦,telephoto,pos
+构图,微距,macro,pos
+构图,浅景深,shallow depth of field,pos
+构图,虚化背景,blurry background,pos
+构图,居中构图,centered composition,pos
+构图,三分法,rule of thirds,pos
+构筑,廊架,pergola,pos
+构筑,亭子,pavilion,pos
+构筑,景墙,feature wall,pos
+构筑,坐凳,bench,pos
+构筑,栈桥,pier,pos
+构筑,桥,bridge,pos
+构筑,栅栏,fence,pos
+植物,樱花,cherry blossom,pos
+植物,银杏,ginkgo,pos
+植物,红枫,japanese maple,pos
+植物,松树,pine tree,pos
+植物,竹子,bamboo,pos
+植物,柳树,willow,pos
+植物,荷花,lotus,pos
+植物,芦苇,reed,pos
+植物,睡莲,water lily,pos
+植物,绣球花,hydrangea,pos
+植物,薰衣草,lavender field,pos
+植物,向日葵,sunflower,pos
+植物,玉兰,magnolia,pos
+植物,桂花,osmanthus,pos
+植物,蕨类,fern,pos
+植物,苔藓,moss,pos
+植物,地被花草,groundcover flowers,pos
+植物,行道树,street trees,pos
+植物,绿篱,hedge,pos
+植物,大草坪,open lawn,pos
+水景,静水面,reflecting pool,pos
+水景,喷泉,fountain,pos
+水景,叠水,cascading water,pos
+水景,跌水墙,water wall,pos
+水景,溪涧,creek,pos
+水景,亲水平台,waterfront deck,pos
+水景,驳岸,embankment,pos
+画质,精细细节,intricate details,pos
+画质,半透明质感,translucent texture,pos
+画质,柔和阴影,soft shading,pos
+空间,入口广场,entrance plaza,pos
+空间,中心景观,central landscape,pos
+空间,庭院空间,courtyard space,pos
+空间,滨水空间,waterfront space,pos
+空间,林下空间,understory space,pos
+空间,草坪空间,lawn space,pos
+空间,儿童活动区,playground,pos
+空间,休憩区,resting area,pos
+空间,步道,walking path,pos
+空间,观景平台,viewing deck,pos
+空间,轴线,axis,pos
+空间,框景,framed view,pos
+自定义,海边,"beach, ocean",pos
+自定义,少女,young girl,pos
+自定义,现代日系精致插画,modern delicate Japanese illustration,pos
+自定义,白裙,white dress,pos
+自定义,云朵,clouds,pos
+自定义,白天,daytime,pos
+自定义,安静,"quiet, peaceful",pos
+自定义,暖光,warm lighting,pos
+自定义,冷色调,cool tone,pos
+自定义,氛围感,atmospheric,pos
+自定义,风吹头发,hair blowing,pos
+自定义,樱花树,cherry blossom tree,pos
+表情,微笑,gentle smile,pos
+表情,开心的笑,"big smile, happy",pos
+表情,害羞,"shy, blushing",pos
+表情,脸红,blushing,pos
+表情,平静,calm expression,pos
+表情,惊讶,"surprised, wide eyes",pos
+表情,生气,"angry, frown",pos
+表情,悲伤,sad expression,pos
+表情,闭眼,closed eyes,pos
+表情,半闭眼,half-closed eyes,pos
+表情,移开视线,looking away,pos
+表情,直视镜头,looking at viewer,pos
+表情,嘟嘴,pout,pos
+表情,咬唇,biting lip,pos
+表情,开心,"happy, big smile",pos
+表情,大笑,"laughing, open mouth",pos
+表情,坏笑,smirk,pos
+表情,尴尬,embarrassed,pos
+表情,无表情,expressionless,pos
+表情,震惊,"shocked, open mouth",pos
+表情,疑惑,"confused, tilted head",pos
+表情,不满,annoyed,pos
+表情,哭,"crying, tears",pos
+表情,眼眶湿润,teary eyes,pos
+表情,忧郁,melancholy,pos
+表情,困倦,sleepy,pos
+表情,认真,serious expression,pos
+表情,温柔,"soft eyes, gentle gaze",pos
+表情,锐利,sharp eyes,pos
+表情,张嘴,open mouth,pos
+表情,微张嘴,parted lips,pos
+表情,低头,looking down,pos
+表情,抬眼,looking up,pos
+表情,有点不好意思,"shy, blushing",pos
+表情,不好意思,"shy, blushing",pos
+表情,害羞地,"shy, blushing",pos
+表情,笑着,gentle smile,pos
+表情,笑,smile,pos
+语境,雾,mist,auto
+语境,亮,bright,auto
+语境,2,测试负面词,auto
+语境,光,light,auto
+语境,阴影,shadow,auto
+语境,雨,rain,auto
+负面,低质量,"lowres, worst quality",neg
+负面,模糊,blurry,neg
+负面,畸形,"deformed, bad anatomy",neg
+负面,手崩,"bad hands, extra fingers",neg
+负面,水印,watermark,neg
+负面,文字,"text, signature",neg
+负面,过曝,overexposed,neg
+负面,色彩过饱和,oversaturated,neg
+负面,平光,flat lighting,neg
+负面,白底呆板,plain white background,neg
+负面,过多人物,"multiple girls, crowd",neg
+负面,人物太多,"multiple girls, crowd",neg
+负面,避免多余人物,multiple girls,neg
+负面,崩坏,"bad anatomy, deformed",neg
+负面,多余人物,"multiple girls, crowd",neg
+负面,杂乱,cluttered background,neg
+负面,背景杂物,cluttered background,neg
+负面,标志,"logo, watermark",neg
+负面,噪点,"noise, grainy",neg
+负面,僵硬,stiff pose,neg
+负面,重复,"duplicate, multiple views",neg
+负面,多余,"multiple girls, crowd",neg
+负面,过于杂乱,cluttered background,neg
+负面,杂乱无章,cluttered background,neg
+负面,太亮,"overexposed, blown out highlights",neg
+负面,过亮,overexposed,neg
+负面,遮住,covering,neg
+负面,遮挡,obscured,neg
+负面,遮住眼睛,hair over eyes,neg
+负面,头发遮眼,hair over eyes,neg
+负面,脏乱,"messy, dirty",neg
+负面,阴影过重,heavy shadows,neg
+负面,脸部模糊,blurry face,neg
+负面,多余肢体,extra limbs,neg
+负面,扭曲,distorted,neg
+负面,低对比,low contrast,neg
+质量,杰作,masterpiece,pos
+质量,最高质量,best quality,pos
+质量,高分辨率,absurdres,pos
+铺装,石材铺装,stone paving,pos
+铺装,木栈道,wooden boardwalk,pos
+铺装,汀步,stepping stones,pos
+铺装,卵石路,pebble path,pos
+铺装,透水砖,permeable pavement,pos
+风格,日系插画,soft delicate anime illustration,pos
+风格,赛璐璐,"cel shading, flat color",pos
+风格,厚涂,"thick painting, painterly",pos
+风格,水彩,watercolor,pos
+风格,光线质感,"translucent texture, soft shading",pos
+风格,油画,oil painting,pos
+风格,素描,sketch,pos
+风格,线稿,"lineart, monochrome",pos
+风格,写实,photorealistic,pos
+风格,3D渲染,"3d render, cg",pos
+风格,动画截图,anime screencap,pos
+风格,动漫插画,anime illustration,pos
