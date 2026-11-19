@@ -1,0 +1,105 @@
+﻿================================================
+ comfyui-zh2tag 安装说明（压缩包用户）
+================================================
+
+【这是什么】
+ComfyUI 的一个节点，把中文描述转成 SDXL 能用的英文标签。
+
+
+【三步装好】
+
+第 1 步：解压到 custom_nodes
+  · 把 comfyui-zh2tag-1.0 这个文件夹整个复制到
+    ComfyUI\custom_nodes\ 里面
+  · 检查路径是否正确：
+    ComfyUI\custom_nodes\comfyui-zh2tag-1.0\__init__.py
+    能看到 __init__.py 就说明位置对了
+
+第 2 步：重启 ComfyUI
+  · 关掉 ComfyUI 窗口，重新启动
+  · 第一次启动会自动建词库（349 条），稍等几秒
+
+第 3 步：用节点
+  · 双击画布空白处
+  · 搜索「提示词翻译」
+  · 选「提示词翻译（直连采样器）」
+  · 连线：
+      Checkpoint 的 CLIP  -> 节点的 clip 输入
+      节点的 positive     -> KSampler 的 positive
+      节点的 negative     -> KSampler 的 negative
+  · 在 text 框里写中文，点 Queue
+
+
+【不装模型也能用】
+
+节点里有个 use_ai 开关：
+  · 关闭（默认建议先关）
+    -> 只用本地词库，0.1 秒出结果，不占显存
+  · 开启
+    -> 用 Qwen 模型拆词，能理解更口语的说法，需要装模型
+
+
+【想用 AI 拆词：装本地模型（可选）】
+
+在命令行执行：
+  set HF_ENDPOINT=https://hf-mirror.com
+  pip install transformers accelerate huggingface_hub
+  huggingface-cli download Qwen/Qwen2.5-1.5B-Instruct --local-dir D:\models\Qwen2.5-1.5B
+
+然后设置环境变量：
+  set PT_MODEL_DIR=D:\models\Qwen2.5-1.5B
+
+或者不用本地模型，改用 API：
+  把 ai_config.example.json 复制成 ai_config.json
+  填上你的 API key（DeepSeek / 硅基流动 / 中转都行）
+
+
+【加词：让它越用越准】
+
+双击 tools\add_word.bat（先改里面的 Python 路径）
+  中文: 樱花树
+  标签: cherry blossom tree
+  类型: 1（正面）
+
+也可以命令行：
+  python tools\add_word.py 樱花树 "cherry blossom tree" pos
+  python tools\add_word.py 水印 watermark neg
+  python tools\add_word.py 亮 bright auto
+
+
+【词库会不会被覆盖】
+
+不会。
+  · data\prompt_db.db 是你自己的词库
+  · 插件升级不会动它
+  · 想备份就直接复制这个文件
+
+
+【常见问题】
+
+Q: 重启后搜索不到「提示词翻译」
+A: 检查路径，必须是 custom_nodes\comfyui-zh2tag-1.0\__init__.py
+
+Q: 报错 "No module named transformers"
+A: 说明开了 use_ai 但没装依赖，先关掉 use_ai，或 pip install transformers
+
+Q: 出图里少了某些内容
+A: 看节点底部的【未收录】，把那些词加进词库
+
+Q: 提示词里不该有的东西出现了
+A: 用「不要XX」的写法，或在 default_negative 里补充
+
+
+【文件说明】
+
+__init__.py            节点主程序
+ai_backends.py         AI 后端（本地/API）
+data\seed.csv          种子词库（349 条）
+tools\add_word.py      加词工具
+examples\              示例工作流
+ai_config.example.json 配置模板
+README.docx            详细说明（Word）
+
+================================================
+GitHub: https://github.com/daxi6666/comfyui-zh2tag
+================================================
