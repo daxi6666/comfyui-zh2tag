@@ -1,0 +1,52 @@
+{
+  "_comment": "API 格式工作流（POST /prompt 用）。UI 里请手动连线：Checkpoint.CLIP -> 节点.clip，节点.positive/negative -> KSampler。",
+  "1": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": { "ckpt_name": "animagine-xl-4.0.safetensors" }
+  },
+  "2": {
+    "class_type": "PromptTranslatorCLIP",
+    "inputs": {
+      "text": "少女坐在窗边看书，黄昏的光，浅景深，不要水印",
+      "use_ai": true,
+      "unload_after": true,
+      "mixed_language": true,
+      "ai_backend": "local",
+      "prefix": "masterpiece, best quality, 1girl, solo, upper body,",
+      "suffix": "soft lighting",
+      "default_negative": "lowres, bad anatomy, bad hands, extra fingers, watermark, text, worst quality",
+      "clip": ["1", 1]
+    }
+  },
+  "3": {
+    "class_type": "EmptyLatentImage",
+    "inputs": { "width": 1024, "height": 1024, "batch_size": 1 }
+  },
+  "4": {
+    "class_type": "KSampler",
+    "inputs": {
+      "seed": 20260101,
+      "steps": 28,
+      "cfg": 5.5,
+      "sampler_name": "euler_ancestral",
+      "scheduler": "normal",
+      "denoise": 1.0,
+      "model": ["1", 0],
+      "positive": ["2", 0],
+      "negative": ["2", 1],
+      "latent_image": ["3", 0]
+    }
+  },
+  "5": {
+    "class_type": "VAEDecode",
+    "inputs": { "samples": ["4", 0], "vae": ["1", 2] }
+  },
+  "6": {
+    "class_type": "SaveImage",
+    "inputs": { "filename_prefix": "translator", "images": ["5", 0] }
+  },
+  "7": {
+    "class_type": "PreviewAny",
+    "inputs": { "source": ["2", 2] }
+  }
+}
