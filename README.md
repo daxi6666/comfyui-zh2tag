@@ -1,4 +1,4 @@
-# ComfyUI-Prompt-Translator
+# comfyui-zh2tag
 
 把中文描述转成 Stable Diffusion 能用的英文标签。**模型负责理解中文，词库负责给出准确的标签。**
 
@@ -49,7 +49,7 @@
 
 ```bash
 cd ComfyUI/custom_nodes
-git clone https://github.com/你的用户名/ComfyUI-Prompt-Translator.git
+git clone https://github.com/你的用户名/comfyui-zh2tag.git
 ```
 
 首次启动会自动从 `data/seed.csv` 建库。
@@ -318,7 +318,7 @@ ComfyUI 默认对相同输入跳过执行。本节点提供了 `fingerprint_inpu
 ## 目录结构
 
 ```
-ComfyUI-Prompt-Translator/
+comfyui-zh2tag/
 ├── __init__.py              节点定义 + 核心逻辑
 ├── ai_backends.py           AI 后端（local / openai）
 ├── data/
