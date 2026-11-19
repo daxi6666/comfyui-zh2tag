@@ -1,0 +1,6 @@
+# 本地模型后端需要（API 模式不需要）
+transformers>=4.40.0
+accelerate>=0.30.0
+
+# 已随 ComfyUI 安装：torch / numpy / pillow
+# 无需在 requirements 里重复声明 torch，避免覆盖 ComfyUI 的 CUDA 版本
