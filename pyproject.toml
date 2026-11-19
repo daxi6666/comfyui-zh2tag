@@ -1,0 +1,16 @@
+[project]
+name = "comfyui-prompt-translator"
+description = "中文提示词转 SDXL 标签的 ComfyUI 节点：模型拆词，本地词库给出准确标签"
+version = "0.1.0"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/daxi6666/ComfyUI-Prompt-Translator"
+
+[tool.comfy]
+PublisherId = "daxi6666"
+DisplayName = "Prompt Translator 中文提示词翻译"
+Icon = ""
+requires-comfyui = ">=0.3.0"
