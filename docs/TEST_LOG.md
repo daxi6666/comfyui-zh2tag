@@ -1,3 +1,33 @@
+## 2026-11-20 · 类名冲突修复
+
+### 发现
+
+查 ComfyUI-Manager 的节点映射表（5749 个仓库）时发现：
+
+```
+PromptTranslator 这个类名已被两个仓库占用
+  · comnote-max/builmenlabo
+  · yanlang0123/ComfyUI_Lam
+```
+
+ComfyUI 的节点类名必须全局唯一，重名时后加载的会覆盖先加载的，且报错难排查。
+
+### 处理
+
+| 旧 | 新 | 状态 |
+|---|---|---|
+| `PromptTranslator` | `ZH2TagTranslator` | 已改名 |
+| `PromptTranslatorCLIP` | 不变 | 未被占用 |
+| `PromptTranslatorUnload` | 不变 | 未被占用 |
+
+验证：`/object_info` 中 `PromptTranslator` 已不存在，三个新名称均正常注册。
+
+### 影响
+
+- 旧工作流里的"文字版"节点会变成 Missing Node，需要重新添加
+- "直连采样器版"不受影响（类名未变）
+
+---
 ## 2026-11-20 · 副词/虚词泄漏测试
 
 ### 问题
