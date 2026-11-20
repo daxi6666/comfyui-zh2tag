@@ -1,3 +1,52 @@
+## 2026-11-20 · 正负冲突与按词路由修复
+
+### 现象
+
+300 字自然中文出图，头纱消失、发色漂移。
+
+### 归因
+
+| 问题 | 性质 |
+|---|---|
+| 发色丢失 | **输入问题**：那段文本根本没写发色（"紫色"指的是天空） |
+| 头纱消失 | **真 bug**：`黑纱从花冠垂下来遮住半边肩膀` 这一句匹配到 3 个词（遮住=负向、花冠=正向、黑纱=正向），旧逻辑"只要有一个负向词整句进负向"，把黑纱和花冠一起拖进负向 |
+| 正负冲突 | `flower crown` 同时出现在正向和负向，互相抵消 |
+
+### 修复
+
+**① 按词路由**：同一句命中的多个词，按各自极性分别分发。
+
+```
+遮住 → covering      → 负向
+花冠 → flower crown  → 正向
+黑纱 → black veil    → 正向
+```
+
+**② 模型负向纠正**：模型把词库判定为正向的内容放进负向时，纠正回正向，并在 info 里记一行【纠正】。
+
+**③ 正负互斥**：输出前检查，同一标签不出现在两边（负面词库的词仍保留在负向）。
+
+### 修复后同一段文本
+
+```
+正向：... violet hair, flower crown, black veil, white dress, white lily,
+     riverside, sitting, soft eyes, gentle gaze, sunlight, bokeh, dust particles ...
+负向：lowres, bad anatomy, bad hands, extra fingers, watermark, text, worst quality,
+     blurry, covering, signature, multiple girls, crowd
+```
+
+黑纱、花冠、发色全部回到正向，`covering`（遮住）正确留在负向。
+
+### 回归
+
+```
+边界用例 14/14 ✅
+双副本一致性 5/5 ✅
+LoRA 专项 7/7 ✅
+负向写法（不要亮/不要水印，有 AI 与纯词库）✅
+```
+
+---
 ## 2026-11-20 · 实际使用诊断（用户工作流复盘）
 
 ### 现象
