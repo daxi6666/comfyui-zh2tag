@@ -93,7 +93,7 @@ comfyui-zh2tag
 
     --------------------------------------------------------
     cd ComfyUI/custom_nodes
-    git clone https://github.com/你的用户名/comfyui-zh2tag.git
+    git clone https://github.com/daxi6666/comfyui-zh2tag.git
     --------------------------------------------------------
 
 首次启动会自动从 data/seed.csv 建库。
