@@ -581,7 +581,7 @@ def _cache_fingerprint(kwargs):
 
 
 # ---------------- 节点 ----------------
-class PromptTranslator:
+class ZH2TagTranslator:
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -678,13 +678,13 @@ class PromptTranslatorUnload:
 
 
 NODE_CLASS_MAPPINGS = {
-    "PromptTranslator": PromptTranslator,
+    "ZH2TagTranslator": ZH2TagTranslator,
     "PromptTranslatorCLIP": PromptTranslatorCLIP,
     "PromptTranslatorUnload": PromptTranslatorUnload,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "PromptTranslator": "提示词翻译（中文→标签）",
+    "ZH2TagTranslator": "提示词翻译（中文→标签）",
     "PromptTranslatorCLIP": "提示词翻译（直连采样器）",
     "PromptTranslatorUnload": "卸载翻译模型",
 }
