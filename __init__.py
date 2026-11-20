@@ -482,6 +482,7 @@ def translate(text, use_ai=True, unload_after=True, prefix="", suffix="",
         "model_dir": MODEL_DIR,
     }
     text = (text or "").strip()
+    SEG_STATE["n"] = 1          # 每次调用重置，避免上一次的分段数残留
 
     if not (prefix or "").strip():
         prefix = DEFAULT_PREFIX
