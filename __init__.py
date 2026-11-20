@@ -27,6 +27,8 @@ MODEL_DIR = os.environ.get("PT_MODEL_DIR", r"E:\AI\Models\Qwen2.5-1.5B-Instruct"
 LAST_FILE = os.environ.get("PT_LAST_FILE", os.path.join(_HERE, "data", "最近一次.txt"))
 
 DEFAULT_PREFIX = "masterpiece, best quality, 1girl, solo, upper body,"
+SEG_LIMIT = int(os.environ.get("PT_SEG_LIMIT", "60"))
+
 DEFAULT_NEGATIVE = "lowres, bad anatomy, bad hands, extra fingers, watermark, text, worst quality"
 
 SYSTEM = """你是提示词拆解助手。把中文描述拆成关键词短语，用中文输出。
@@ -64,6 +66,8 @@ try:
     import ai_backends
 except Exception:
     ai_backends = None
+
+SEG_STATE = {"n": 1}
 
 _lock = threading.Lock()
 _cache = {"tok": None, "model": None}
@@ -223,18 +227,7 @@ def match_with_fallback(phrase, mapping, keys, lora_keys=None):
     if ASCII_ONLY.match(phrase):
         return phrase, [], []
 
-    parts = [x for x in re.split(r"[的地得了是里中上]", phrase) if len(x) >= 2]
-    tags, miss, hits = [], [], []
-    for p in parts:
-        k2, t2 = match_phrase(p, mapping, keys, lora_keys)
-        if t2:
-            tags.append(t2)
-            hits.append(k2)
-        else:
-            miss.append(p)
-    if tags:
-        return ", ".join(dict.fromkeys(tags)), miss, hits
-
+    # 先做子串扫描（更保守），再考虑拆词模糊匹配
     found, rest, hits2 = [], phrase, []
     for k3 in keys:
         if lora_keys and k3 in lora_keys:   # LoRA 触发词：只允许词边界上的子串命中
@@ -247,6 +240,19 @@ def match_with_fallback(phrase, mapping, keys, lora_keys=None):
             rest = rest.replace(k3, "", 1)
     if found:
         return ", ".join(dict.fromkeys(found)), [], hits2
+
+    # 最后兜底：按虚词拆开，再逐段做精确/模糊匹配
+    parts = [x for x in re.split(r"[的地得了是里中上]", phrase) if len(x) >= 2]
+    tags, miss, hits3 = [], [], []
+    for p2 in parts:
+        k4, t4 = match_phrase(p2, mapping, keys, lora_keys)
+        if t4:
+            tags.append(t4)
+            hits3.append(k4)
+        else:
+            miss.append(p2)
+    if tags:
+        return ", ".join(dict.fromkeys(tags)), miss, hits3
     return None, [phrase], []
 
 
@@ -388,14 +394,83 @@ def extract_forced_negatives(text):
         for part in text.split(m)[1:]:
             seg = re.split(r"[，,。.；;：:\s、]", part)[0].strip()
             seg = _clean_neg(seg)
-            if 2 <= len(seg) <= 8:
+            if 1 <= len(seg) <= 8:
                 out.append(seg)
     # 后置："水印不要出现"
     for m in NEG_POST.finditer(text):
         seg = _clean_neg(m.group(1))
-        if 2 <= len(seg) <= 8:
+        if 1 <= len(seg) <= 8:
             out.append(seg)
     return list(dict.fromkeys(out))
+
+
+def split_verbatim(text):
+    """按分句分离：中文进模型，非中文原样透传（逐句判断否定作用域）
+
+    规则：
+      · 只有全角/半角逗号、句号、分号、顿号、叹问号才当作分句符
+      · 英文点号、冒号、括号不算分句符，所以 <lora:xxx:0.8>、(masterpiece:1.2) 不会被切碎
+      · 某一句里有"不要/避免/去掉"等，则这一句里的英文片段进负向
+    返回 (中文句子拼接文本, 正向透传列表, 负向透传列表)
+    """
+    SEP = "，,。；;、！？!?\n"
+    neg_markers = ("不要", "避免", "去掉", "别用", "别让", "别", "除了")
+
+    clauses = []
+    cur_cn, cur_non = "", ""
+
+    def close():
+        nonlocal cur_cn, cur_non
+        if cur_cn or cur_non:
+            clauses.append((cur_cn, cur_non))
+        cur_cn, cur_non = "", ""
+
+    for ch in text or "":
+        if ch in SEP:
+            close()
+        elif is_cn_char(ch):
+            cur_cn += ch
+        else:
+            cur_non += ch
+    close()
+
+    cn_clauses, pos_keep, neg_keep = [], [], []
+    for cn, noncn in clauses:
+        cn = cn.strip()
+        noncn = noncn.strip()
+        if cn and cn not in neg_markers:
+            cn_clauses.append(cn)
+        if noncn:
+            if any(mk in cn for mk in neg_markers):
+                neg_keep.append(noncn)
+            else:
+                pos_keep.append(noncn)
+
+    return "，".join(cn_clauses), pos_keep, neg_keep
+
+
+def chunk_cn(text, limit=60):
+    """把中文长句按标点切成 <= limit 字的块（超长单句硬切）"""
+    parts = [x.strip() for x in re.split(r"[，,。；;、！？!?\n]+", text or "") if x.strip()]
+    out, buf = [], ""
+    for part in parts:
+        if len(part) >= limit:
+            if buf:
+                out.append(buf)
+                buf = ""
+            for i in range(0, len(part), limit):
+                out.append(part[i:i + limit])
+            continue
+        if not buf:
+            buf = part
+        elif len(buf) + len(part) + 1 <= limit:
+            buf += "，" + part
+        else:
+            out.append(buf)
+            buf = part
+    if buf:
+        out.append(buf)
+    return out or [text]
 
 
 # ---------------- 核心翻译 ----------------
@@ -416,10 +491,24 @@ def translate_core(text, use_ai=True, cfg=None):
     auto_keys = load_auto_keys()
 
     obj = None
+    seg_count = 1
     if use_ai:
         try:
-            with _lock:
-                obj = ask_model(text, cfg)
+            chunks = chunk_cn(text, SEG_LIMIT)
+            seg_count = len(chunks)
+            SEG_STATE["n"] = seg_count
+            if seg_count == 1:
+                with _lock:
+                    obj = ask_model(text, cfg)
+            else:
+                pos_all, neg_all = [], []
+                with _lock:
+                    for ch in chunks:
+                        o = ask_model(ch, cfg)
+                        if o:
+                            pos_all += list(o.get("positive", []))
+                            neg_all += list(o.get("negative", []))
+                obj = {"positive": pos_all, "negative": neg_all}
         except Exception as e:
             print(f"[PromptTranslator] 模型调用失败: {e}")
             obj = None
@@ -428,9 +517,22 @@ def translate_core(text, use_ai=True, cfg=None):
         p0, n0, m0 = db_only(text, mapping, keys, neg_keys)
         return p0, n0, m0, []
 
+    def _keep_phrase(ph):
+        """过滤模型输出：纯英文交给透传；单字碎片不要"""
+        ph = str(ph).strip()
+        if not ph:
+            return False
+        if not any(is_cn_char(c) for c in ph):
+            return False
+        if len(ph) == 1 and ph not in mapping:
+            return False
+        return True
+
     pos_list, neg_list, miss = [], [], []
     auto_log = []
     for p in obj.get("positive", []):
+        if not _keep_phrase(p):
+            continue
         t, m, hits = match_with_fallback(p, mapping, keys, lora_keys)
         if t:
             hs = hits or []
@@ -443,6 +545,8 @@ def translate_core(text, use_ai=True, cfg=None):
                 pos_list.append(t)
         miss.extend(m)
     for p in obj.get("negative", []):
+        if not _keep_phrase(p):
+            continue
         t, m, hits = match_with_fallback(p, mapping, keys, lora_keys)
         if t:
             hs = hits or []
@@ -520,6 +624,10 @@ def translate(text, use_ai=True, unload_after=True, prefix="", suffix="",
         return "", "", "【提示】输入为空"
 
     try:
+        # 非中文片段（英文/数字/权重/<lora:..>）直接透传，绝不进模型
+        cn_text, keep_pos, keep_neg = split_verbatim(text)
+        # 送给模型的是原文（保留英文语境，语法不被切断）；
+        # 模型输出里的纯英文片段会被丢弃，统一由 keep_pos/keep_neg 透传
         core_pos, core_neg, miss, auto_log = translate_core(text, use_ai, cfg)
 
         p_out, p_miss = localize_field(prefix, use_ai, False, mixed, cfg)
@@ -527,8 +635,10 @@ def translate(text, use_ai=True, unload_after=True, prefix="", suffix="",
         n_out, n_miss = localize_field(default_negative, use_ai, True, mixed, cfg)
         miss = list(miss) + list(p_miss) + list(s_miss) + list(n_miss)
 
-        pos = dedupe_tags(", ".join([x for x in (p_out, core_pos, s_out) if x]))
-        neg = dedupe_tags(", ".join([x for x in (n_out, core_neg) if x]))
+        keep_pos_s = ", ".join(keep_pos)
+        keep_neg_s = ", ".join(keep_neg)
+        pos = dedupe_tags(", ".join([x for x in (p_out, core_pos, keep_pos_s, s_out) if x]))
+        neg = dedupe_tags(", ".join([x for x in (n_out, core_neg, keep_neg_s) if x]))
 
         # 强制负向：原文"不要X"里的 X，即使模型判成正向也要挪到负向
         forced_tags = []
@@ -549,8 +659,12 @@ def translate(text, use_ai=True, unload_after=True, prefix="", suffix="",
         # 英文 token 保护：正文里出现的英文词（如 LoRA 触发词）如果被模型丢了，补回来
         auto_back = []
         for tok in re.findall(r"[A-Za-z][A-Za-z0-9_\-]{2,}", text):
-            if tok.lower() not in pos.lower():
-                auto_back.append(tok)
+            low = tok.lower()
+            if low in pos.lower():
+                continue
+            if low in neg.lower():      # 已经在负向，不要再补回正向
+                continue
+            auto_back.append(tok)
         if auto_back:
             pos = dedupe_tags(pos + ", " + ", ".join(dict.fromkeys(auto_back)))
 
@@ -564,6 +678,8 @@ def translate(text, use_ai=True, unload_after=True, prefix="", suffix="",
             + "【prefix】" + (p_out or "(空)") + "\n"
             + "【suffix】" + (s_out or "(空)") + "\n"
             + "【negative】" + (n_out or "(空)")
+            + (("\n【分段】" + str(SEG_STATE.get("n", 1)) + " 段") if SEG_STATE.get("n", 1) > 1 else "")
+            + (("\n【原样透传】" + ", ".join(keep_pos + keep_neg)) if (keep_pos or keep_neg) else "")
             + (("\n【自动补回】" + ", ".join(dict.fromkeys(auto_back))) if auto_back else "")
         )
 
