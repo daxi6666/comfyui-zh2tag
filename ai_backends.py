@@ -7,7 +7,6 @@
 """
 
 import json
-import os
 import threading
 
 _lock = threading.Lock()
