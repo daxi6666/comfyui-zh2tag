@@ -5,6 +5,8 @@ ai_config.json
 api_key.txt
 
 # Python
+.ruff_cache/
+.pytest_cache/
 __pycache__/
 *.py[cod]
 *.egg-info/
