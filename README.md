@@ -343,6 +343,12 @@ ComfyUI 默认对相同输入跳过执行。本节点提供了 `fingerprint_inpu
 
 ---
 
+## 测试记录
+
+所有实测数据（长文本、Qwen 能力、稳定性、回归）见 [docs/TEST_LOG.md](docs/TEST_LOG.md)，
+包含方法、数据表、失败案例和归因。
+原始数据在 [docs/data/](docs/data/)。
+
 ## 已知限制
 
 | 限制 | 说明 |
