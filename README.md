@@ -89,7 +89,7 @@ ComfyUI\custom_nodes\comfyui-zh2tag-1.0\__init__.py   ← 这个文件的存在�
 
 ```bash
 cd ComfyUI/custom_nodes
-git clone https://github.com/你的用户名/comfyui-zh2tag.git
+git clone https://github.com/daxi6666/comfyui-zh2tag.git
 ```
 
 首次启动会自动从 `data/seed.csv` 建库。
