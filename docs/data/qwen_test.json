@@ -1,0 +1,539 @@
+[
+ {
+  "cat": "分词粒度",
+  "text": "少女站在花海微笑",
+  "ok": true,
+  "ok_json": true,
+  "expect_pos": [
+   "少女",
+   "花海",
+   "微笑"
+  ],
+  "hit_pos": [
+   "少女",
+   "花海",
+   "微笑"
+  ],
+  "expect_neg": [],
+  "hit_neg": [],
+  "leak": [],
+  "forbidden": [],
+  "pos": [
+   "少女",
+   "花海",
+   "微笑"
+  ],
+  "neg": [],
+  "dt": 6.594488859176636
+ },
+ {
+  "cat": "分词粒度",
+  "text": "穿白裙的少女在窗边看书",
+  "ok": true,
+  "ok_json": true,
+  "expect_pos": [
+   "少女",
+   "白裙",
+   "窗边",
+   "看书"
+  ],
+  "hit_pos": [
+   "少女",
+   "白裙",
+   "窗边",
+   "看书"
+  ],
+  "expect_neg": [],
+  "hit_neg": [],
+  "leak": [],
+  "forbidden": [],
+  "pos": [
+   "穿白裙的少女",
+   "窗边",
+   "看书"
+  ],
+  "neg": [],
+  "dt": 0.7554712295532227
+ },
+ {
+  "cat": "分词粒度",
+  "text": "她左手拿着一朵百合花",
+  "ok": true,
+  "ok_json": true,
+  "expect_pos": [
+   "百合花"
+  ],
+  "hit_pos": [
+   "百合花"
+  ],
+  "expect_neg": [],
+  "hit_neg": [],
+  "leak": [],
+  "forbidden": [],
+  "pos": [
+   "左手",
+   "百合花"
+  ],
+  "neg": [],
+  "dt": 0.5276989936828613
+ },
+ {
+  "cat": "分词粒度",
+  "text": "两个女孩手牵手走在沙滩上",
+  "ok": true,
+  "ok_json": true,
+  "expect_pos": [
+   "女孩",
+   "手牵手",
+   "沙滩"
+  ],
+  "hit_pos": [
+   "女孩",
+   "手牵手",
+   "沙滩"
+  ],
+  "expect_neg": [],
+  "hit_neg": [],
+  "leak": [],
+  "forbidden": [],
+  "pos": [
+   "两个女孩",
+   "手牵手",
+   "走在沙滩上"
+  ],
+  "neg": [],
+  "dt": 0.7169578075408936
+ },
+ {
+  "cat": "分词粒度",
+  "text": "画面左上角有一盏台灯",
+  "ok": true,
+  "ok_json": true,
+  "expect_pos": [
+   "台灯"
+  ],
+  "hit_pos": [
+   "台灯"
+  ],
+  "expect_neg": [],
+  "hit_neg": [],
+  "leak": [],
+  "forbidden": [],
+  "pos": [
+   "一盏台灯"
+  ],
+  "neg": [],
+  "dt": 0.47748517990112305
+ },
+ {
+  "cat": "语义同义",
+  "text": "她有点不好意思地低下头",
+  "ok": false,
+  "ok_json": true,
+  "expect_pos": [
+   "害羞",
+   "低头"
+  ],
+  "hit_pos": [],
+  "expect_neg": [],
+  "hit_neg": [],
+  "leak": [],
+  "forbidden": [],
+  "pos": [
+   "她",
+   "不好意思",
+   "低下头"
+  ],
+  "neg": [],
+  "dt": 0.6055855751037598
+ },
+ {
+  "cat": "语义同义",
+  "text": "女孩脸上泛起红晕",
+  "ok": false,
+  "ok_json": true,
+  "expect_pos": [
+   "脸红"
+  ],
+  "hit_pos": [],
+  "expect_neg": [],
+  "hit_neg": [],
+  "leak": [],
+  "forbidden": [],
+  "pos": [
+   "女孩",
+   "脸上",
+   "泛起红晕"
+  ],
+  "neg": [],
+  "dt": 0.6610212326049805
+ },
+ {
+  "cat": "语义同义",
+  "text": "他看起来一脸疲惫",
+  "ok": true,
+  "ok_json": true,
+  "expect_pos": [
+   "疲惫"
+  ],
+  "hit_pos": [
+   "疲惫"
+  ],
+  "expect_neg": [],
+  "hit_neg": [],
+  "leak": [],
+  "forbidden": [],
+  "pos": [
+   "一脸疲惫"
+  ],
+  "neg": [],
+  "dt": 0.4334602355957031
+ },
+ {
+  "cat": "语义同义",
+  "text": "天空阴沉沉的",
+  "ok": false,
+  "ok_json": true,
+  "expect_pos": [
+   "阴天"
+  ],
+  "hit_pos": [],
+  "expect_neg": [],
+  "hit_neg": [],
+  "leak": [],
+  "forbidden": [],
+  "pos": [
+   "天空"
+  ],
+  "neg": [],
+  "dt": 0.3833801746368408
+ },
+ {
+  "cat": "语义同义",
+  "text": "阳光透过树叶洒在地上",
+  "ok": true,
+  "ok_json": true,
+  "expect_pos": [
+   "阳光",
+   "树叶"
+  ],
+  "hit_pos": [
+   "阳光",
+   "树叶"
+  ],
+  "expect_neg": [],
+  "hit_neg": [],
+  "leak": [],
+  "forbidden": [],
+  "pos": [
+   "阳光",
+   "树叶",
+   "地上"
+  ],
+  "neg": [],
+  "dt": 0.5832126140594482
+ },
+ {
+  "cat": "否定识别",
+  "text": "不要水印",
+  "ok": true,
+  "ok_json": true,
+  "expect_pos": [],
+  "hit_pos": [],
+  "expect_neg": [
+   "水印"
+  ],
+  "hit_neg": [
+   "水印"
+  ],
+  "leak": [],
+  "forbidden": [],
+  "pos": [],
+  "neg": [
+   "水印"
+  ],
+  "dt": 0.399965763092041
+ },
+ {
+  "cat": "否定识别",
+  "text": "避免画面太挤",
+  "ok": true,
+  "ok_json": true,
+  "expect_pos": [],
+  "hit_pos": [],
+  "expect_neg": [
+   "挤"
+  ],
+  "hit_neg": [
+   "挤"
+  ],
+  "leak": [],
+  "forbidden": [],
+  "pos": [],
+  "neg": [
+   "太挤"
+  ],
+  "dt": 0.39456820487976074
+ },
+ {
+  "cat": "否定识别",
+  "text": "别让头发遮住眼睛",
+  "ok": false,
+  "ok_json": true,
+  "expect_pos": [],
+  "hit_pos": [],
+  "expect_neg": [
+   "头发遮住眼睛",
+   "遮住"
+  ],
+  "hit_neg": [
+   "遮住"
+  ],
+  "leak": [],
+  "forbidden": [],
+  "pos": [],
+  "neg": [
+   "遮住"
+  ],
+  "dt": 0.38319969177246094
+ },
+ {
+  "cat": "否定识别",
+  "text": "去掉文字和签名",
+  "ok": false,
+  "ok_json": true,
+  "expect_pos": [],
+  "hit_pos": [],
+  "expect_neg": [
+   "文字",
+   "签名"
+  ],
+  "hit_neg": [],
+  "leak": [],
+  "forbidden": [],
+  "pos": [],
+  "neg": [],
+  "dt": 0.555678129196167
+ },
+ {
+  "cat": "否定识别",
+  "text": "除了人物其他都不需要",
+  "ok": true,
+  "ok_json": true,
+  "expect_pos": [],
+  "hit_pos": [],
+  "expect_neg": [],
+  "hit_neg": [],
+  "leak": [],
+  "forbidden": [],
+  "pos": [],
+  "neg": [],
+  "dt": 0.32781267166137695
+ },
+ {
+  "cat": "隐含推断",
+  "text": "雨中的便利店门口",
+  "ok": true,
+  "ok_json": true,
+  "expect_pos": [
+   "雨",
+   "便利店"
+  ],
+  "hit_pos": [
+   "雨",
+   "便利店"
+  ],
+  "expect_neg": [],
+  "hit_neg": [],
+  "leak": [],
+  "forbidden": [],
+  "pos": [
+   "雨中",
+   "便利店门口"
+  ],
+  "neg": [],
+  "dt": 0.5387859344482422
+ },
+ {
+  "cat": "隐含推断",
+  "text": "赛璐璐风格",
+  "ok": true,
+  "ok_json": true,
+  "expect_pos": [
+   "赛璐璐"
+  ],
+  "hit_pos": [
+   "赛璐璐"
+  ],
+  "expect_neg": [],
+  "hit_neg": [],
+  "leak": [],
+  "forbidden": [],
+  "pos": [
+   "赛璐璐风格"
+  ],
+  "neg": [],
+  "dt": 0.4722023010253906
+ },
+ {
+  "cat": "隐含推断",
+  "text": "她背对着镜头",
+  "ok": true,
+  "ok_json": true,
+  "expect_pos": [
+   "背对"
+  ],
+  "hit_pos": [
+   "背对"
+  ],
+  "expect_neg": [],
+  "hit_neg": [],
+  "leak": [],
+  "forbidden": [],
+  "pos": [
+   "她",
+   "背对着镜头"
+  ],
+  "neg": [],
+  "dt": 0.38335204124450684
+ },
+ {
+  "cat": "隐含推断",
+  "text": "坐在咖啡馆靠窗的位置",
+  "ok": true,
+  "ok_json": true,
+  "expect_pos": [
+   "坐",
+   "咖啡馆",
+   "窗"
+  ],
+  "hit_pos": [
+   "坐",
+   "咖啡馆",
+   "窗"
+  ],
+  "expect_neg": [],
+  "hit_neg": [],
+  "leak": [],
+  "forbidden": [],
+  "pos": [
+   "坐在咖啡馆",
+   "靠窗的位置"
+  ],
+  "neg": [],
+  "dt": 0.6222906112670898
+ },
+ {
+  "cat": "隐含推断",
+  "text": "一只白猫趴在书桌上",
+  "ok": true,
+  "ok_json": true,
+  "expect_pos": [
+   "猫",
+   "书桌"
+  ],
+  "hit_pos": [
+   "猫",
+   "书桌"
+  ],
+  "expect_neg": [],
+  "hit_neg": [],
+  "leak": [],
+  "forbidden": [],
+  "pos": [
+   "白猫",
+   "趴在书桌"
+  ],
+  "neg": [],
+  "dt": 0.577650785446167
+ },
+ {
+  "cat": "格式边界",
+  "text": "少女微笑",
+  "ok": true,
+  "ok_json": true,
+  "expect_pos": [
+   "少女",
+   "微笑"
+  ],
+  "hit_pos": [
+   "少女",
+   "微笑"
+  ],
+  "expect_neg": [],
+  "hit_neg": [],
+  "leak": [],
+  "forbidden": [],
+  "pos": [
+   "少女",
+   "微笑"
+  ],
+  "neg": [],
+  "dt": 0.489243745803833
+ },
+ {
+  "cat": "格式边界",
+  "text": "abc 123",
+  "ok": true,
+  "ok_json": true,
+  "expect_pos": [],
+  "hit_pos": [],
+  "expect_neg": [],
+  "hit_neg": [],
+  "leak": [],
+  "forbidden": [],
+  "pos": [],
+  "neg": [
+   "abc",
+   "123"
+  ],
+  "dt": 0.516402006149292
+ },
+ {
+  "cat": "格式边界",
+  "text": "！！！？？",
+  "ok": true,
+  "ok_json": true,
+  "expect_pos": [],
+  "hit_pos": [],
+  "expect_neg": [],
+  "hit_neg": [],
+  "leak": [],
+  "forbidden": [],
+  "pos": [],
+  "neg": [],
+  "dt": 0.33330655097961426
+ },
+ {
+  "cat": "格式边界",
+  "text": "少女站在薄雾笼罩的木栈道上手里捧着百合花黄昏的光从背后照过来形成了轮廓光",
+  "ok": true,
+  "ok_json": true,
+  "expect_pos": [
+   "少女",
+   "木栈道",
+   "百合花",
+   "黄昏"
+  ],
+  "hit_pos": [
+   "少女",
+   "木栈道",
+   "百合花",
+   "黄昏"
+  ],
+  "expect_neg": [],
+  "hit_neg": [],
+  "leak": [],
+  "forbidden": [],
+  "pos": [
+   "少女",
+   "薄雾",
+   "木栈道",
+   "百合花",
+   "黄昏",
+   "轮廓光"
+  ],
+  "neg": [],
+  "dt": 1.0384905338287354
+ }
+]
