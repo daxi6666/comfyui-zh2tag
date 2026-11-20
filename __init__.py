@@ -176,6 +176,21 @@ def load_lora_keys():
         return set()
 
 
+LORA_BOUNDARY = set("站坐躺走跑穿戴抱捧拿看笑说唱跳蹲靠卧在的了着过和与及跟同、，。！？；： 　\n\"'（）()一也都在就还又正们很太更最才刚再已经")
+
+
+def lora_boundary_ok(text, name, idx):
+    """LoRA 名字是否处在"词边界"上：前面是段首/标点，后面是动词、助词或标点"""
+    if idx > 0:
+        prev = text[idx - 1]
+        if not (is_cn_char(prev) is False or prev in LORA_BOUNDARY):
+            return False
+    end = idx + len(name)
+    if end >= len(text):
+        return True
+    return text[end] in LORA_BOUNDARY
+
+
 def match_phrase(phrase, mapping, keys, lora_keys=None):
     """返回 (命中的键, 标签)；未命中返回 (None, None)"""
     if phrase in mapping:
@@ -222,6 +237,10 @@ def match_with_fallback(phrase, mapping, keys, lora_keys=None):
 
     found, rest, hits2 = [], phrase, []
     for k3 in keys:
+        if lora_keys and k3 in lora_keys:   # LoRA 触发词：只允许词边界上的子串命中
+            pos3 = rest.find(k3)
+            if pos3 < 0 or not lora_boundary_ok(rest, k3, pos3):
+                continue
         if k3 in rest:
             found.append(mapping[k3])
             hits2.append(k3)
@@ -254,6 +273,10 @@ def db_only(text, mapping=None, keys=None, neg_keys=None):
             continue
         rest, hit = seg, False
         for k in keys:
+            if k in lora_keys:      # LoRA 触发词：只允许词边界上的子串命中
+                pos = rest.find(k)
+                if pos < 0 or not lora_boundary_ok(rest, k, pos):
+                    continue
             if k in rest:
                 route(k, mapping[k])
                 rest = rest.replace(k, "", 1)
