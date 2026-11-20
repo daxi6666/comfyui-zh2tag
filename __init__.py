@@ -16,7 +16,6 @@ import difflib
 import hashlib
 import threading
 
-import torch
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _DEFAULT_DB = os.path.join(_HERE, "data", "prompt_db.db")
@@ -68,10 +67,9 @@ except Exception:
     ai_backends = None
 
 SEG_STATE = {"n": 1}
+CORR_STATE = {"items": []}
 
 _lock = threading.Lock()
-_cache = {"tok": None, "model": None}
-
 
 def _ensure_db():
     """数据库不存在时，从 data/seed.csv 自动建库"""
@@ -346,8 +344,7 @@ def free_model():
     except Exception:
         pass
     with _lock:
-        _cache["tok"] = None
-        _cache["model"] = None
+        pass
 
 
 def ask_model(text, cfg=None):
@@ -530,33 +527,65 @@ def translate_core(text, use_ai=True, cfg=None):
 
     pos_list, neg_list, miss = [], [], []
     auto_log = []
+
+    def _route(tags_str, hits, from_negative=False):
+        """按命中的每个词库键分别决定去正向还是负向（同一句可拆到两边）"""
+        hs = [h for h in (hits or []) if h]
+        if not hs:
+            # 没有命中键：跟随模型的原始分类（正向列表来的就进正向）
+            if from_negative:
+                pos_list.append(tags_str)      # 模型判负向但词库里没有依据 → 放回正向
+            else:
+                pos_list.append(tags_str)
+            return
+        if len(hs) == 1:
+            h = hs[0]
+            if h in neg_keys:
+                neg_list.append(tags_str)
+            elif h in auto_keys:
+                if from_negative:
+                    neg_list.append(tags_str)
+                    auto_log.append(f"{tags_str}=负向")
+                else:
+                    pos_list.append(tags_str)
+                    auto_log.append(f"{tags_str}=正向")
+            else:
+                pos_list.append(tags_str)
+                if from_negative:
+                    CORR_STATE["items"].append(tags_str)
+            return
+        # 多个键：逐个按极性分发（例："遮住"→负向，"花冠"/"黑纱"→正向）
+        for h in hs:
+            tag = mapping.get(h, tags_str)
+            if h in neg_keys:
+                neg_list.append(tag)
+            elif h in auto_keys:
+                if from_negative:
+                    neg_list.append(tag)
+                    auto_log.append(f"{tag}=负向")
+                else:
+                    pos_list.append(tag)
+                    auto_log.append(f"{tag}=正向")
+            else:
+                pos_list.append(tag)
+                if from_negative:
+                    CORR_STATE["items"].append(tag)
+
     for p in obj.get("positive", []):
         if not _keep_phrase(p):
             continue
         t, m, hits = match_with_fallback(p, mapping, keys, lora_keys)
         if t:
-            hs = hits or []
-            if any(h in neg_keys for h in hs):
-                neg_list.append(t)      # 词库标记 neg → 强制负向
-            elif any(h in auto_keys for h in hs):
-                pos_list.append(t)      # auto → 跟随模型（这里模型说是正向）
-                auto_log.append(f"{t}=正向")
-            else:
-                pos_list.append(t)
+            _route(t, hits, from_negative=False)
         miss.extend(m)
+
     for p in obj.get("negative", []):
         if not _keep_phrase(p):
             continue
         t, m, hits = match_with_fallback(p, mapping, keys, lora_keys)
         if t:
-            hs = hits or []
-            if any(h in auto_keys for h in hs):
-                neg_list.append(t)      # auto → 跟随模型（这里模型说是负向）
-                auto_log.append(f"{t}=负向")
-            else:
-                neg_list.append(t)
+            _route(t, hits, from_negative=True)
         miss.extend(m)
-
     return dedupe_tags(", ".join(pos_list)), dedupe_tags(", ".join(neg_list)), miss, auto_log
 
 
@@ -610,6 +639,7 @@ def translate(text, use_ai=True, unload_after=True, prefix="", suffix="",
     }
     text = (text or "").strip()
     SEG_STATE["n"] = 1          # 每次调用重置，避免上一次的分段数残留
+    CORR_STATE["items"] = []
 
     if not (prefix or "").strip():
         prefix = DEFAULT_PREFIX
@@ -639,6 +669,17 @@ def translate(text, use_ai=True, unload_after=True, prefix="", suffix="",
         keep_neg_s = ", ".join(keep_neg)
         pos = dedupe_tags(", ".join([x for x in (p_out, core_pos, keep_pos_s, s_out) if x]))
         neg = dedupe_tags(", ".join([x for x in (n_out, core_neg, keep_neg_s) if x]))
+
+        # 正负互斥：同一标签不在两边同时出现（负面词库的词仍保留在负向）
+        if pos and neg:
+            neg_keys_now = load_neg_keys()
+            pos_set = {x.strip() for x in pos.split(",") if x.strip()}
+            kept_neg = []
+            for tg in [x.strip() for x in neg.split(",") if x.strip()]:
+                if tg in pos_set and tg not in neg_keys_now:
+                    continue          # 内容词重复 → 只留正向
+                kept_neg.append(tg)
+            neg = ", ".join(kept_neg)
 
         # 强制负向：原文"不要X"里的 X，即使模型判成正向也要挪到负向
         forced_tags = []
@@ -678,6 +719,7 @@ def translate(text, use_ai=True, unload_after=True, prefix="", suffix="",
             + "【prefix】" + (p_out or "(空)") + "\n"
             + "【suffix】" + (s_out or "(空)") + "\n"
             + "【negative】" + (n_out or "(空)")
+            + (("\n【纠正】" + ", ".join(dict.fromkeys(CORR_STATE["items"])) + "（模型判为负向，已放回正向）") if CORR_STATE["items"] else "")
             + (("\n【分段】" + str(SEG_STATE.get("n", 1)) + " 段") if SEG_STATE.get("n", 1) > 1 else "")
             + (("\n【原样透传】" + ", ".join(keep_pos + keep_neg)) if (keep_pos or keep_neg) else "")
             + (("\n【自动补回】" + ", ".join(dict.fromkeys(auto_back))) if auto_back else "")
