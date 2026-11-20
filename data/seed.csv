@@ -4,7 +4,6 @@
 光影,柔光,soft diffused light,pos
 光影,侧光,side lighting,pos
 光影,顶光,top lighting,pos
-光影,光斑,bokeh,pos
 光影,镜头光晕,lens flare,pos
 光影,体积光,volumetric light,pos
 光影,黄昏,golden hour,pos
@@ -248,6 +247,46 @@
 自定义,氛围感,atmospheric,pos
 自定义,风吹头发,hair blowing,pos
 自定义,樱花树,cherry blossom tree,pos
+自定义,原野,"open field, meadow",pos
+自定义,花冠,flower crown,pos
+自定义,黑纱,black veil,pos
+自定义,天空,sky,pos
+自定义,云层,clouds,pos
+自定义,山峦,mountains,pos
+自定义,山脉,"mountains, mountain range",pos
+自定义,湖泊,lake,pos
+自定义,花瓣,petals,pos
+自定义,尘埃,dust particles,pos
+自定义,影子,shadow,pos
+自定义,长裙,long dress,pos
+自定义,白色百合花,white lily,pos
+自定义,暖色调,warm tone,pos
+自定义,背景虚化,blurred background,pos
+自定义,蕾丝装饰,lace trim,pos
+自定义,黑色长靴,black boots,pos
+自定义,头发,hair,pos
+自定义,橙色,orange,pos
+自定义,紫色,purple,pos
+自定义,女孩子,girl,pos
+自定义,角落,corner,pos
+自定义,窗户,window,pos
+自定义,桌子,table,pos
+自定义,书架,bookshelf,pos
+自定义,暖和,warm,pos
+自定义,怀旧,nostalgic,pos
+自定义,哥特风格长裙,gothic long dress,pos
+自定义,对比度适中,balanced contrast,pos
+自定义,柔和,"soft, gentle",pos
+自定义,温暖,warm,pos
+自定义,精致,"delicate, detailed",pos
+自定义,好看,beautiful,pos
+自定义,漂亮,beautiful,pos
+自定义,明亮,bright,pos
+自定义,阳光,sunlight,pos
+自定义,舒适,cozy,pos
+自定义,干净,clean,pos
+自定义,通透,"translucent, clear",pos
+自定义,氛围感强,strong atmosphere,pos
 表情,微笑,gentle smile,pos
 表情,开心的笑,"big smile, happy",pos
 表情,害羞,"shy, blushing",pos
@@ -262,7 +301,7 @@
 表情,直视镜头,looking at viewer,pos
 表情,嘟嘴,pout,pos
 表情,咬唇,biting lip,pos
-表情,开心,"happy, big smile",pos
+表情,开心,happy,pos
 表情,大笑,"laughing, open mouth",pos
 表情,坏笑,smirk,pos
 表情,尴尬,embarrassed,pos
@@ -286,6 +325,7 @@
 表情,害羞地,"shy, blushing",pos
 表情,笑着,gentle smile,pos
 表情,笑,smile,pos
+语境,光斑,bokeh,auto
 语境,雾,mist,auto
 语境,亮,bright,auto
 语境,2,测试负面词,auto
